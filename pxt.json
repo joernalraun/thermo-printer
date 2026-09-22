@@ -1,0 +1,24 @@
+{
+    "name": "thermal-print",
+    "version": "0.0.1",
+    "description": "Print text, styled text and barcodes on a serial thermal till-roll printer",
+    "license": "MIT",
+    "dependencies": {
+        "core": "*"
+    },
+    "files": [
+        "README.md",
+        "thermalprint.ts",
+        "legacy.ts",
+        "_locales/de/thermal-print-strings.json",
+        "_locales/de/thermal-print-jsdoc.json"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "supportedTargets": [
+        "microbit",
+        "calliopemini"
+    ],
+    "preferredEditor": "tsprj"
+}

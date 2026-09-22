@@ -1,0 +1,30 @@
+{
+    "thermalPrinter|block": "Thermodrucker",
+
+    "thermalprinter_connect|block": "verbinde Drucker|TX Pin %tx|Baudrate %baud||RX Pin %rx",
+    "thermalprinter_setheat|block": "setze Druckhitze|Punkte %dots|Zeit %time|Intervall %interval",
+
+    "thermalprinter_printline|block": "drucke Zeile %text",
+    "thermalprinter_print|block": "drucke %text ohne Zeilenumbruch",
+    "thermalprinter_feed|block": "schiebe %lines Zeilen vor",
+
+    "thermalprinter_setbold|block": "setze fett %on",
+    "thermalprinter_setunderline|block": "setze unterstrichen %on",
+    "thermalprinter_setwide|block": "setze breit %on",
+    "thermalprinter_setupsidedown|block": "setze auf dem Kopf %on",
+    "thermalprinter_setlargefont|block": "setze große Schrift %on",
+    "thermalprinter_setdoubleheight|block": "setze doppelte Höhe %on",
+    "thermalprinter_setsmallfont|block": "setze kleine Schrift %on",
+    "thermalprinter_setinverse|block": "setze invers %on",
+
+    "thermalprinter_setalign|block": "richte aus %alignment",
+    "thermalPrinter.Alignment.Left|block": "links",
+    "thermalPrinter.Alignment.Centre|block": "zentriert",
+    "thermalPrinter.Alignment.Right|block": "rechts",
+
+    "thermalprinter_printbarcode|block": "drucke Barcode %format|%data",
+    "thermalprinter_setbarcodetext|block": "zeige Barcode-Ziffern %on",
+
+    "thermalprinter_reset|block": "setze Drucker zurück",
+    "thermalprinter_test|block": "drucke Testseite des Druckers"
+}

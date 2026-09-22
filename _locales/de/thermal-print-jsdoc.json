@@ -1,0 +1,43 @@
+{
+    "thermalPrinter": "Blöcke für einen seriellen Thermo-Bondrucker.",
+
+    "thermalPrinter.connect": "Verbindet den Thermodrucker. Einmal am Programmanfang aufrufen.",
+    "thermalPrinter.connect|param|tx": "der Pin, der am RX-Anschluss des Druckers hängt, z.B.: SerialPin.P8",
+    "thermalPrinter.connect|param|baud": "die Geschwindigkeit des Druckers, z.B.: BaudRate.BaudRate19200",
+    "thermalPrinter.connect|param|rx": "ein Pin, der sonst nicht gebraucht wird, z.B.: SerialPin.P1",
+
+    "thermalPrinter.setHeat": "Legt fest, wie dunkel und wie schnell der Drucker druckt. Höhere Werte drucken dunkler, aber langsamer und brauchen mehr Strom.",
+    "thermalPrinter.setHeat|param|dots": "maximale Heizpunkte, 0-7, z.B.: 7",
+    "thermalPrinter.setHeat|param|time": "Heizdauer in 10-µs-Schritten, 0-255, z.B.: 255",
+    "thermalPrinter.setHeat|param|interval": "Heizintervall in 10-µs-Schritten, 0-255, z.B.: 255",
+
+    "thermalPrinter.printLine": "Druckt eine Textzeile. Der Zeilenumbruch wird automatisch angehängt.",
+    "thermalPrinter.printLine|param|text": "der Text, der gedruckt werden soll, z.B.: \"Hallo\"",
+
+    "thermalPrinter.printText": "Schickt Text an den Drucker, ohne ihn zu drucken. Erst ein Zeilenumbruch druckt ihn - so lassen sich mehrere Schriftarten in einer Zeile mischen.",
+    "thermalPrinter.printText|param|text": "der Text, der gesendet werden soll, z.B.: \"Hallo\"",
+
+    "thermalPrinter.feedLines": "Schiebt leere Zeilen vor und druckt dabei alles, was noch im Puffer steht.",
+    "thermalPrinter.feedLines|param|lines": "wie viele Zeilen vorgeschoben werden, z.B.: 1",
+
+    "thermalPrinter.setBold": "Schaltet fetten Text ein oder aus.",
+    "thermalPrinter.setUnderline": "Schaltet unterstrichenen Text ein oder aus. Die Linie ist dick.",
+    "thermalPrinter.setWide": "Schaltet doppelt breiten Text ein oder aus.",
+    "thermalPrinter.setUpsideDown": "Schaltet auf dem Kopf stehenden Text ein oder aus.",
+    "thermalPrinter.setLargeFont": "Schaltet die besonders große Schrift ein oder aus.",
+    "thermalPrinter.setDoubleHeight": "Schaltet doppelt hohen Text ein oder aus. Das Ausschalten löscht auch invers und kleine Schrift.",
+    "thermalPrinter.setSmallFont": "Schaltet die besonders kleine Schrift ein oder aus. Das Ausschalten löscht auch invers und doppelte Höhe.",
+    "thermalPrinter.setInverse": "Schaltet inversen Text (weiß auf schwarz) ein oder aus. Das Ausschalten löscht auch doppelte Höhe und kleine Schrift.",
+
+    "thermalPrinter.setAlignment": "Richtet den folgenden Text links, zentriert oder rechts aus.",
+    "thermalPrinter.setAlignment|param|alignment": "wohin der Text ausgerichtet wird, z.B.: thermalPrinter.Alignment.Centre",
+
+    "thermalPrinter.printBarcode": "Druckt einen Barcode. UPC-A braucht genau 12 Ziffern, EAN-13 genau 13. CODE93 und CODE128 können auch Buchstaben.",
+    "thermalPrinter.printBarcode|param|format": "das Barcode-Format, z.B.: thermalPrinter.Barcode.EAN13",
+    "thermalPrinter.printBarcode|param|data": "der Code, der gedruckt wird, z.B.: \"9781477520826\"",
+
+    "thermalPrinter.setBarcodeHumanReadable": "Druckt die Ziffern unter dem Barcode mit oder lässt sie weg.",
+
+    "thermalPrinter.reset": "Setzt den Drucker zurück und löscht alle Schriftarten.",
+    "thermalPrinter.printTestPage": "Druckt die Testseite des Druckers mit Zeichensätzen, Baudrate, Temperatur und Firmware-Version."
+}
