@@ -1,8 +1,8 @@
 # Thermodrucker / Thermal Printer
 
 MakeCode-Erweiterung zum Drucken auf einem seriellen Thermo-Bondrucker
-(Kassenbon-Drucker, wie sie Pimoroni, Sparkfun oder Adafruit verkaufen) mit
-BBC micro:bit oder Calliope mini.
+(Kassenbon-Drucker, wie sie Pimoroni, Sparkfun oder Adafruit verkaufen) mit dem
+Calliope mini.
 
 Die Erweiterung bietet dieselben Funktionen wie das MicroPython-Modul
 [`thermal_print.py`](../thermal_print.py) von Giles Booth (@blogmywiki) –
@@ -10,13 +10,13 @@ jeder Block schickt genau dieselben ESC/POS-Steuercodes an den Drucker.
 
 ## Verkabelung
 
-| Drucker | micro:bit / Calliope mini |
+| Drucker | Calliope mini |
 | --- | --- |
 | RX (Daten) | TX-Pin, Standard **P8** |
 | GND | GND (gemeinsam mit dem Netzteil!) |
 | VH / VCC | **5–9 V, 2 A Netzteil** – *nicht* vom Board versorgen |
 
-Der Drucker braucht ein eigenes Netzteil; der micro:bit kann ihn nicht speisen.
+Der Drucker braucht ein eigenes Netzteil!
 GND von Board, Drucker und Netzteil müssen verbunden sein.
 
 ## Benutzung
@@ -86,27 +86,13 @@ arbeiten mit einer Codepage (meist CP437), deshalb können Umlaute und andere
 Sonderzeichen falsch herauskommen. Für Texte mit Umlauten lohnt es sich, den
 Zeichensatz des Druckers auszuprobieren (Testseite drucken).
 
-## Alte Programme portieren
 
-Die Datei `legacy.ts` enthält die Funktionsnamen aus `thermal_print.py` bzw.
-`thermal_print.ts` (`boldOn()`, `centreAlign()`, `barcodeEAN13()`, …). Alter
-Code läuft damit fast unverändert weiter – nur `thermalPrinter.` davorsetzen:
-
-```typescript
-thermalPrinter.centreAlign()
-thermalPrinter.boldOn()
-thermalPrinter.thermal_print_ln("wie früher")
-thermalPrinter.boldOff()
-```
-
-Diese Funktionen haben absichtlich keine Blöcke; im Block-Editor bitte die
-Blöcke oben benutzen.
 
 ## Als Erweiterung verwenden
 
 Dieses Repository lässt sich als **Erweiterung** in MakeCode hinzufügen.
 
-* [makecode.microbit.org](https://makecode.microbit.org/) öffnen
+* [makecode.calliope.cc](https://makecode.calliope.cc) öffnen
 * **Neues Projekt** anklicken
 * im Zahnrad-Menü **Erweiterungen** anklicken
 * die URL dieses Repositories eintragen und danach suchen
@@ -117,7 +103,7 @@ Dieses Repository lässt sich als **Erweiterung** in MakeCode hinzufügen.
 
 Zum Bearbeiten in MakeCode:
 
-* [makecode.microbit.org](https://makecode.microbit.org/) öffnen
+* [makecode.calliope.cc](https://makecode.calliope.cc) öffnen
 * **Importieren** und dann **Importiere URL** anklicken
 * die URL dieses Repositories einfügen und auf Importieren klicken
 
@@ -129,6 +115,5 @@ die JavaScript-Portierung von Niels Swinkels.
 
 #### Metadata (used for search, rendering)
 
-* for PXT/microbit
 * for PXT/calliopemini
 <script src="https://makecode.com/gh-pages-embed.js"></script><script>makeCodeRender("{{ site.makecode.home_url }}", "{{ site.github.owner_name }}/{{ site.github.repository_name }}");</script>
