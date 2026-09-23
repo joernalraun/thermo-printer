@@ -54,6 +54,15 @@ input.onButtonPressed(Button.A, function () {
     thermalPrinter.printBarcode(thermalPrinter.Barcode.CODE128, "CODE128")
     thermalPrinter.printBarcode(thermalPrinter.Barcode.CODE93, "CODE93")
 
+    thermalPrinter.printLine("QR code:")
+    thermalPrinter.setAlignment(thermalPrinter.Alignment.Centre)
+    thermalPrinter.printQrCode("https://calliope.cc", 6, thermalPrinter.QrErrorCorrection.Medium)
+    thermalPrinter.setAlignment(thermalPrinter.Alignment.Left)
+
+    thermalPrinter.setTextSize(3, 3)
+    thermalPrinter.printLine("3x3")
+    thermalPrinter.setTextSize(1, 1)
+
     thermalPrinter.feedLines(3)
 })
 

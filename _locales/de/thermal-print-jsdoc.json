@@ -2,14 +2,26 @@
     "thermalPrinter": "Blöcke für einen seriellen Thermo-Bondrucker.",
 
     "thermalPrinter.connect": "Verbindet den Thermodrucker. Einmal am Programmanfang aufrufen.",
-    "thermalPrinter.connect|param|tx": "der Pin, der am RX-Anschluss des Druckers hängt, z.B.: SerialPin.P8",
+    "thermalPrinter.connect|param|tx": "der Pin am RX-Anschluss des Druckers - nach Beschriftung verkabeln, nicht nach Aderfarbe, z.B.: SerialPin.P8",
     "thermalPrinter.connect|param|baud": "die Geschwindigkeit des Druckers, z.B.: BaudRate.BaudRate19200",
-    "thermalPrinter.connect|param|rx": "ein Pin, der sonst nicht gebraucht wird, z.B.: SerialPin.P1",
+    "thermalPrinter.connect|param|rx": "ein freier Pin, der NICHT verkabelt wird - serial.redirect braucht ihn, der Drucker nicht, z.B.: SerialPin.P1",
 
     "thermalPrinter.setHeat": "Legt fest, wie dunkel und wie schnell der Drucker druckt. Höhere Werte drucken dunkler, aber langsamer und brauchen mehr Strom.",
     "thermalPrinter.setHeat|param|dots": "maximale Heizpunkte, 0-7, z.B.: 7",
     "thermalPrinter.setHeat|param|time": "Heizdauer in 10-µs-Schritten, 0-255, z.B.: 255",
     "thermalPrinter.setHeat|param|interval": "Heizintervall in 10-µs-Schritten, 0-255, z.B.: 255",
+
+    "thermalPrinter.setFirmwareVersion": "Teilt der Erweiterung mit, welche Firmware der Drucker hat, damit sie den richtigen Befehl für inversen Text wählt. Die Version steht auf der Testseite: 2.68 wird als 268 eingetragen. Nur bei Druckern älter als 2.68 nötig.",
+    "thermalPrinter.setFirmwareVersion|param|version": "die Firmwareversion ohne Punkt, z.B.: 268",
+
+    "thermalPrinter.setTextSize": "Legt fest, wie viel höher und breiter der Text gedruckt wird. Das ersetzt den Block für große Schrift, es addiert sich nicht - beide nutzen denselben Druckerbefehl. Nicht jede Firmware kann mehr als 2.",
+    "thermalPrinter.setTextSize|param|width": "wie viel breiter, 1 bis 8, z.B.: 2",
+    "thermalPrinter.setTextSize|param|height": "wie viel höher, 1 bis 8, z.B.: 2",
+
+    "thermalPrinter.printQrCode": "Druckt einen QR-Code, zum Beispiel eine Webadresse. Nutzt die QR-Funktion des Druckers, die nur neuere Geräte haben - kommt nichts heraus, die Testseite drucken und das Modell prüfen.",
+    "thermalPrinter.printQrCode|param|data": "der Text oder die URL, die verschlüsselt wird, z.B.: \"https://calliope.cc\"",
+    "thermalPrinter.printQrCode|param|moduleSize": "wie viele Druckpunkte ein Kästchen breit ist, 1 bis 16, z.B.: 6",
+    "thermalPrinter.printQrCode|param|ecc": "wie stark der Code beschädigt sein darf und trotzdem lesbar bleibt",
 
     "thermalPrinter.printLine": "Druckt eine Textzeile. Der Zeilenumbruch wird automatisch angehängt.",
     "thermalPrinter.printLine|param|text": "der Text, der gedruckt werden soll, z.B.: \"Hallo\"",
@@ -24,10 +36,10 @@
     "thermalPrinter.setUnderline": "Schaltet unterstrichenen Text ein oder aus. Die Linie ist dick.",
     "thermalPrinter.setWide": "Schaltet doppelt breiten Text ein oder aus.",
     "thermalPrinter.setUpsideDown": "Schaltet auf dem Kopf stehenden Text ein oder aus.",
-    "thermalPrinter.setLargeFont": "Schaltet die besonders große Schrift ein oder aus.",
-    "thermalPrinter.setDoubleHeight": "Schaltet doppelt hohen Text ein oder aus. Das Ausschalten löscht auch invers und kleine Schrift.",
-    "thermalPrinter.setSmallFont": "Schaltet die besonders kleine Schrift ein oder aus. Das Ausschalten löscht auch invers und doppelte Höhe.",
-    "thermalPrinter.setInverse": "Schaltet inversen Text (weiß auf schwarz) ein oder aus. Das Ausschalten löscht auch doppelte Höhe und kleine Schrift.",
+    "thermalPrinter.setLargeFont": "Schaltet die besonders große Schrift ein oder aus. Das entspricht der Textgröße 2 mal 2.",
+    "thermalPrinter.setDoubleHeight": "Schaltet doppelt hohen Text ein oder aus. Das addiert sich nicht zu großer Schrift oder Textgröße - alle drei stellen dieselbe Vergrößerung ein. Das Ausschalten löscht auch die kleine Schrift, und bei Firmware älter als 2.68 auch invers.",
+    "thermalPrinter.setSmallFont": "Schaltet die besonders kleine Schrift ein oder aus. Das Ausschalten löscht auch doppelte Höhe, und bei Firmware älter als 2.68 auch invers.",
+    "thermalPrinter.setInverse": "Schaltet inversen Text (weiß auf schwarz) ein oder aus. Bei Druckern älter als Firmware 2.68 löscht das Ausschalten auch doppelte Höhe und kleine Schrift - siehe setFirmwareVersion.",
 
     "thermalPrinter.setAlignment": "Richtet den folgenden Text links, zentriert oder rechts aus.",
     "thermalPrinter.setAlignment|param|alignment": "wohin der Text ausgerichtet wird, z.B.: thermalPrinter.Alignment.Centre",

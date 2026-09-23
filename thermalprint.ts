@@ -8,7 +8,7 @@
  */
 
 //% color=#A0522D icon="" block="Thermal Printer"
-//% groups='["Setup", "Printing", "Text style", "Alignment", "Barcodes", "Printer", "others"]'
+//% groups='["Setup", "Printing", "Text style", "Alignment", "Barcodes", "QR codes", "Printer", "others"]'
 namespace thermalPrinter {
 
     export enum Alignment {
@@ -31,8 +31,22 @@ namespace thermalPrinter {
         CODE128 = 8
     }
 
+    export enum QrErrorCorrection {
+        //% block="L (7%)"
+        Low = 48,
+        //% block="M (15%)"
+        Medium = 49,
+        //% block="Q (25%)"
+        Quartile = 50,
+        //% block="H (30%)"
+        High = 51
+    }
+
     const ESC = 0x1B
     const GS = 0x1D
+
+    // Printers before firmware 2.68 use a different command for inverse text.
+    let firmwareVersion = 268
 
     /**
      * Send raw bytes to the printer. Using a buffer rather than a string keeps
@@ -50,12 +64,12 @@ namespace thermalPrinter {
 
     /**
      * Connect to a thermal printer. Call this once at the start of your program.
-     * @param tx the pin wired to the printer's RX line, eg: SerialPin.P8
+     * @param tx the pin wired to the printer's RX line - go by the label, not the wire colour, eg: SerialPin.P8
      * @param baud the speed of the printer, eg: BaudRate.BaudRate19200
-     * @param rx a pin that is not used by anything else, eg: SerialPin.P1
+     * @param rx a spare pin, left unwired - serial.redirect needs one, the printer does not, eg: SerialPin.P1
      */
     //% blockId=thermalprinter_connect
-    //% block="connect printer|TX pin %tx|baud rate %baud||RX pin %rx"
+    //% block="connect printer|TX pin %tx|baud rate %baud||spare RX pin %rx"
     //% tx.defl=SerialPin.P8 baud.defl=BaudRate.BaudRate19200 rx.defl=SerialPin.P1
     //% expandableArgumentMode="toggle"
     //% group="Setup" weight=100 blockGap=8
@@ -82,6 +96,21 @@ namespace thermalPrinter {
     //% advanced=true
     export function setHeat(dots: number, time: number, interval: number): void {
         send([ESC, 0x37, dots, time, interval])
+    }
+
+    /**
+     * Tell the extension which firmware the printer runs, so it can pick the
+     * right command for inverse text. Print the test page to find the version:
+     * 2.68 is written as 268. Only needed for printers older than 2.68.
+     * @param version the firmware version without the dot, eg: 268
+     */
+    //% blockId=thermalprinter_setfirmware
+    //% block="set printer firmware version %version"
+    //% version.defl=268
+    //% group="Setup" weight=80
+    //% advanced=true
+    export function setFirmwareVersion(version: number): void {
+        firmwareVersion = version
     }
 
     // ------------------------------------------------------------- Printing
@@ -173,7 +202,30 @@ namespace thermalPrinter {
     }
 
     /**
+     * Set how many times taller and wider the text is printed.
+     * This replaces the large font block rather than adding to it - both use
+     * the same printer command. Not every firmware manages more than 2.
+     * @param width how many times wider, 1 to 8, eg: 2
+     * @param height how many times taller, 1 to 8, eg: 2
+     */
+    //% blockId=thermalprinter_settextsize
+    //% block="set text size|width %width|height %height"
+    //% width.min=1 width.max=8 width.defl=2
+    //% height.min=1 height.max=8 height.defl=2
+    //% group="Text style" weight=65 blockGap=8
+    export function setTextSize(width: number, height: number): void {
+        let w = width | 0
+        let h = height | 0
+        if (w < 1) w = 1
+        if (w > 8) w = 8
+        if (h < 1) h = 1
+        if (h > 8) h = 8
+        send([GS, 0x21, ((w - 1) << 4) | (h - 1)])
+    }
+
+    /**
      * Turn the extra large font on or off.
+     * This is the same as setting the text size to 2 by 2.
      */
     //% blockId=thermalprinter_setlargefont
     //% block="set large font %on"
@@ -185,7 +237,9 @@ namespace thermalPrinter {
 
     /**
      * Turn double-height text on or off.
-     * Switching it off also clears inverse and the small font.
+     * This does not stack on top of the large font or the text size blocks -
+     * they all set the same magnification. Switching it off also clears the
+     * small font, and inverse on firmware older than 2.68.
      */
     //% blockId=thermalprinter_setdoubleheight
     //% block="set double height %on"
@@ -197,7 +251,8 @@ namespace thermalPrinter {
 
     /**
      * Turn the extra small font on or off.
-     * Switching it off also clears inverse and double height.
+     * Switching it off also clears double height, and inverse on firmware
+     * older than 2.68.
      */
     //% blockId=thermalprinter_setsmallfont
     //% block="set small font %on"
@@ -209,14 +264,19 @@ namespace thermalPrinter {
 
     /**
      * Turn inverse (white on black) text on or off.
-     * Switching it off also clears double height and the small font.
+     * On printers older than firmware 2.68 switching it off also clears
+     * double height and the small font - see setFirmwareVersion.
      */
     //% blockId=thermalprinter_setinverse
     //% block="set inverse %on"
     //% on.shadow="toggleOnOff" on.defl=true
     //% group="Text style" weight=30
     export function setInverse(on: boolean): void {
-        send([ESC, 0x21, on ? 0x02 : 0x00])
+        if (firmwareVersion >= 268) {
+            send([GS, 0x42, on ? 0x01 : 0x00])
+        } else {
+            send([ESC, 0x21, on ? 0x02 : 0x00])
+        }
     }
 
     // ------------------------------------------------------------ Alignment
@@ -260,6 +320,43 @@ namespace thermalPrinter {
     //% group="Barcodes" weight=90
     export function setBarcodeHumanReadable(on: boolean): void {
         send([GS, 0x48, on ? 0x02 : 0x00])
+    }
+
+    // ------------------------------------------------------------ QR codes
+
+    /**
+     * Print a QR code, for example a web address.
+     * Uses the printer's own QR support, which needs a reasonably modern
+     * printer - if nothing comes out, print the test page to check the model.
+     * @param data the text or URL to encode, eg: "https://calliope.cc"
+     * @param moduleSize how many dots wide each square is, 1 to 16, eg: 6
+     * @param ecc how much of the code can be damaged and still be read
+     */
+    //% blockId=thermalprinter_printqrcode
+    //% block="print QR code %data||size %moduleSize|error correction %ecc"
+    //% data.defl="https://calliope.cc"
+    //% moduleSize.min=1 moduleSize.max=16 moduleSize.defl=6
+    //% expandableArgumentMode="toggle"
+    //% group="QR codes" weight=100
+    export function printQrCode(data: string, moduleSize: number = 6, ecc: QrErrorCorrection = QrErrorCorrection.Medium): void {
+        let size = moduleSize | 0
+        if (size < 1) size = 1
+        if (size > 16) size = 16
+
+        // GS ( k <pL pH> 49 65 50 0 - select QR model 2
+        send([GS, 0x28, 0x6B, 0x04, 0x00, 0x31, 0x41, 0x32, 0x00])
+        // GS ( k <pL pH> 49 67 n - size of one module in dots
+        send([GS, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x43, size])
+        // GS ( k <pL pH> 49 69 n - error correction level
+        send([GS, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x45, ecc])
+        // GS ( k <pL pH> 49 80 48 <data> - store the data.
+        // The length counts bytes, not characters, so encode first.
+        const payload = control.createBufferFromUTF8(data)
+        const len = payload.length + 3
+        send([GS, 0x28, 0x6B, len & 0xFF, (len >> 8) & 0xFF, 0x31, 0x50, 0x30])
+        serial.writeBuffer(payload)
+        // GS ( k <pL pH> 49 81 48 - print what is stored
+        send([GS, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x51, 0x30])
     }
 
     // -------------------------------------------------------------- Printer

@@ -1,8 +1,9 @@
 {
     "thermalPrinter|block": "Thermodrucker",
 
-    "thermalprinter_connect|block": "verbinde Drucker|TX Pin %tx|Baudrate %baud||RX Pin %rx",
+    "thermalprinter_connect|block": "verbinde Drucker|TX Pin %tx|Baudrate %baud||freier RX Pin %rx",
     "thermalprinter_setheat|block": "setze Druckhitze|Punkte %dots|Zeit %time|Intervall %interval",
+    "thermalprinter_setfirmware|block": "setze Drucker-Firmwareversion %version",
 
     "thermalprinter_printline|block": "drucke Zeile %text",
     "thermalprinter_print|block": "drucke %text ohne Zeilenumbruch",
@@ -12,6 +13,7 @@
     "thermalprinter_setunderline|block": "setze unterstrichen %on",
     "thermalprinter_setwide|block": "setze breit %on",
     "thermalprinter_setupsidedown|block": "setze auf dem Kopf %on",
+    "thermalprinter_settextsize|block": "setze Textgröße|Breite %width|Höhe %height",
     "thermalprinter_setlargefont|block": "setze große Schrift %on",
     "thermalprinter_setdoubleheight|block": "setze doppelte Höhe %on",
     "thermalprinter_setsmallfont|block": "setze kleine Schrift %on",
@@ -24,6 +26,12 @@
 
     "thermalprinter_printbarcode|block": "drucke Barcode %format|%data",
     "thermalprinter_setbarcodetext|block": "zeige Barcode-Ziffern %on",
+
+    "thermalprinter_printqrcode|block": "drucke QR-Code %data||Größe %moduleSize|Fehlerkorrektur %ecc",
+    "thermalPrinter.QrErrorCorrection.Low|block": "L (7%)",
+    "thermalPrinter.QrErrorCorrection.Medium|block": "M (15%)",
+    "thermalPrinter.QrErrorCorrection.Quartile|block": "Q (25%)",
+    "thermalPrinter.QrErrorCorrection.High|block": "H (30%)",
 
     "thermalprinter_reset|block": "setze Drucker zurück",
     "thermalprinter_test|block": "drucke Testseite des Druckers"
