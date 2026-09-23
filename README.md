@@ -1,4 +1,4 @@
-# Thermodrucker / Thermal Printer
+# Thermodrucker Erweiterung
 
 MakeCode-Erweiterung zum Drucken auf einem seriellen Thermo-Bondrucker
 (Kassenbon-Drucker, wie sie Pimoroni, Sparkfun oder Adafruit verkaufen) mit dem
