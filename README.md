@@ -1,7 +1,6 @@
 # Thermodrucker Erweiterung
 
-MakeCode-Erweiterung zum Drucken auf einem seriellen Thermo-Bondrucker
-(Kassenbon-Drucker, wie sie Pimoroni, Sparkfun oder Adafruit verkaufen) mit dem
+MakeCode-Erweiterung zum Drucken auf einem seriellen Thermo-Bondrucker mit dem
 Calliope mini.
 
 Die Erweiterung bietet dieselben Funktionen wie das MicroPython-Modul
