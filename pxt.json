@@ -1,7 +1,7 @@
 {
     "name": "thermal-print",
-    "version": "0.0.1",
-    "description": "Print text, styled text and barcodes on a serial thermal till-roll printer",
+    "version": "0.0.3",
+    "description": "Print on a serial thermal printer",
     "license": "MIT",
     "dependencies": {
         "core": "*"
@@ -11,13 +11,22 @@
         "thermalprint.ts",
         "legacy.ts",
         "_locales/de/thermal-print-strings.json",
-        "_locales/de/thermal-print-jsdoc.json"
+        "_locales/de/thermal-print-jsdoc-strings.json",
+        "_locales/el/thermal-print-strings.json",
+        "_locales/el/thermal-print-jsdoc-strings.json",
+        "_locales/es/thermal-print-strings.json",
+        "_locales/es/thermal-print-jsdoc-strings.json",
+        "_locales/fr/thermal-print-strings.json",
+        "_locales/fr/thermal-print-jsdoc-strings.json",
+        "_locales/it/thermal-print-strings.json",
+        "_locales/it/thermal-print-jsdoc-strings.json",
+        "_locales/nl/thermal-print-strings.json",
+        "_locales/nl/thermal-print-jsdoc-strings.json"
     ],
     "testFiles": [
         "test.ts"
     ],
     "supportedTargets": [
-        "microbit",
         "calliopemini"
     ],
     "preferredEditor": "tsprj"

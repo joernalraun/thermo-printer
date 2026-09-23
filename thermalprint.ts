@@ -374,11 +374,20 @@ namespace thermalPrinter {
     /**
      * Print the printer's own test page, showing the character sets,
      * baud rate, temperature and firmware version.
+     * Printers differ in how they are asked for this, so the command follows
+     * the firmware version - see setFirmwareVersion. If nothing comes out,
+     * hold the paper feed button down while switching the printer on.
      */
     //% blockId=thermalprinter_test
     //% block="print printer test page"
     //% group="Printer" weight=90
     export function printTestPage(): void {
-        send([0x12, 0x54])
+        if (firmwareVersion >= 268) {
+            // GS ( A <pL pH> 0 2 - the ESC/POS "execute test print" command
+            send([GS, 0x28, 0x41, 0x02, 0x00, 0x00, 0x02])
+        } else {
+            // DC2 T - the older command, as used by thermal_print.py
+            send([0x12, 0x54])
+        }
     }
 }
