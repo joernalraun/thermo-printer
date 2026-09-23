@@ -1,6 +1,6 @@
 {
     "name": "thermal-print",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Print text, styled text and barcodes on a serial thermal till-roll printer",
     "license": "MIT",
     "dependencies": {
@@ -17,7 +17,6 @@
         "test.ts"
     ],
     "supportedTargets": [
-        "microbit",
         "calliopemini"
     ],
     "preferredEditor": "tsprj"
