@@ -74,6 +74,13 @@ namespace thermalPrinter {
     let styleValues: number[] = []   // value per slot, -1 means "never set"
     let slotUsed: boolean[] = []     // was this mode touched during this run
 
+    // A collected page cannot be printed until its last line is known, so the
+    // extension prints it once the program has stopped adding to it.
+    const QUIET_MS = 300
+    let lastCollected = 0
+    let flushing = false
+    let watching = false
+
     /**
      * Send raw bytes to the printer. Using a buffer rather than a string keeps
      * bytes above 0x7F (e.g. 0xFF in the heat settings) intact.
@@ -117,6 +124,7 @@ namespace thermalPrinter {
     }
 
     function collect(bytes: number[]): void {
+        lastCollected = control.millis()
         for (let i = 0; i < bytes.length; i++) {
             // note the modes in force as each new line opens
             if (currentLine.length == 0) {
@@ -284,10 +292,10 @@ namespace thermalPrinter {
 
     /**
      * Print everything turned by 180 degrees, for a printer that is mounted
-     * upside down. Switch it on once after connecting.
-     * Because the paper then leaves the printer the other way round, the last
-     * line has to be printed first - so nothing appears on paper until you
-     * switch rotation off again or use the print collected lines block.
+     * upside down. Switch it on once after connecting and leave it on.
+     * Because the paper leaves the printer the other way round, the last line
+     * has to come out first, so the lines of a printout are collected and
+     * printed together a moment after your program stops adding to them.
      */
     //% blockId=thermalprinter_setrotated
     //% block="set 180 degree rotation %on"
@@ -301,23 +309,30 @@ namespace thermalPrinter {
             pendingStyles = []
             currentLine = []
             currentStyle = []
+            lastCollected = control.millis()
             resetStyleTracking()
+            startAutoPrint()
         } else {
+            // the background watcher may be part way through a printout
+            while (flushing) {
+                basic.pause(10)
+            }
             flushRotated()
             rotated = false
         }
     }
 
     /**
-     * Print the lines collected so far upside down and in reverse order, and
-     * keep collecting. Use this to print one receipt after another without
-     * switching rotation off in between.
+     * Print the lines collected so far straight away, instead of waiting for
+     * the short pause. Only needed when your program keeps printing without a
+     * break and you want a printout to end at a particular point.
      */
     //% blockId=thermalprinter_flushrotated
     //% block="print collected lines"
     //% group="Rotation" weight=90
     export function flushRotated(): void {
-        if (!rotated) return
+        if (!rotated || flushing) return
+        flushing = true
 
         // text that never got a new line still has to go out
         if (currentLine.length > 0) {
@@ -331,8 +346,7 @@ namespace thermalPrinter {
         pendingLines = []
         pendingStyles = []
 
-        // write straight to the printer from here on, not back into the buffer
-        rotated = false
+        // writeBytes always goes straight out, so the collector stays untouched
         writeBytes([ESC, 0x7B, 0x01])
         for (let i = lines.length - 1; i >= 0; i--) {
             const style = styles[i]
@@ -346,7 +360,27 @@ namespace thermalPrinter {
             writeBytes(lines[i])
         }
         writeBytes([ESC, 0x7B, 0x00])
-        rotated = true
+        flushing = false
+    }
+
+    /**
+     * Watch the collected page and print it once nothing has been added for a
+     * short while. Without this, switching rotation on in "on start" and then
+     * just printing would never put anything on paper.
+     */
+    function startAutoPrint(): void {
+        if (watching) return
+        watching = true
+        control.inBackground(function () {
+            while (rotated) {
+                basic.pause(50)
+                if (rotated && !flushing && pendingLines.length > 0
+                    && control.millis() - lastCollected >= QUIET_MS) {
+                    flushRotated()
+                }
+            }
+            watching = false
+        })
     }
 
     // ----------------------------------------------------------- Text style

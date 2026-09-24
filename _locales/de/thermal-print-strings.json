@@ -33,7 +33,7 @@
     "thermalPrinter.setUnderline|block": "setze unterstrichen %on",
     "thermalPrinter.setUpsideDown|block": "setze auf dem Kopf %on",
     "thermalPrinter.setWide|block": "setze breit %on",
-    "{id:category}Thermal Printer": "Thermodrucker",
+    "thermalPrinter|block": "Thermodrucker",
     "{id:category}ThermalPrinter": "Thermodrucker",
     "{id:group}Alignment": "Ausrichtung",
     "{id:group}Barcodes": "Barcodes",

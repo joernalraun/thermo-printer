@@ -33,7 +33,7 @@
     "thermalPrinter.setUnderline|block": "souligné %on",
     "thermalPrinter.setUpsideDown|block": "à l'envers %on",
     "thermalPrinter.setWide|block": "large %on",
-    "{id:category}Thermal Printer": "Imprimante thermique",
+    "thermalPrinter|block": "Imprimante thermique",
     "{id:category}ThermalPrinter": "Imprimante thermique",
     "{id:group}Alignment": "Alignement",
     "{id:group}Barcodes": "Codes-barres",

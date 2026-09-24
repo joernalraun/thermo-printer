@@ -33,7 +33,7 @@
     "thermalPrinter.setUnderline|block": "subrayado %on",
     "thermalPrinter.setUpsideDown|block": "al revés %on",
     "thermalPrinter.setWide|block": "ancho %on",
-    "{id:category}Thermal Printer": "Impresora térmica",
+    "thermalPrinter|block": "Impresora térmica",
     "{id:category}ThermalPrinter": "Impresora térmica",
     "{id:group}Alignment": "Alineación",
     "{id:group}Barcodes": "Códigos de barras",

@@ -33,7 +33,7 @@
     "thermalPrinter.setUnderline|block": "onderstreept %on",
     "thermalPrinter.setUpsideDown|block": "ondersteboven %on",
     "thermalPrinter.setWide|block": "breed %on",
-    "{id:category}Thermal Printer": "Thermische printer",
+    "thermalPrinter|block": "Thermische printer",
     "{id:category}ThermalPrinter": "Thermische printer",
     "{id:group}Alignment": "Uitlijning",
     "{id:group}Barcodes": "Barcodes",

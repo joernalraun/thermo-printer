@@ -3,6 +3,9 @@
 
 thermalPrinter.connect(SerialPin.P8, BaudRate.BaudRate19200)
 
+// For a printer mounted upside down, switch this on once and leave it on:
+// thermalPrinter.setRotated(true)
+
 input.onButtonPressed(Button.A, function () {
     thermalPrinter.printLine("Microbit thermal printer demo")
 
@@ -71,7 +74,9 @@ input.onButtonPressed(Button.B, function () {
     thermalPrinter.printTestPage()
 })
 
-// Buttons A+B print the same receipt for a printer mounted upside down.
+// Buttons A+B print a receipt the right way up on an upside down printer.
+// Rotation is switched on once here and stays on; the receipt appears on paper
+// by itself a moment after the last line is added.
 input.onButtonPressed(Button.AB, function () {
     thermalPrinter.setRotated(true)
 
@@ -87,7 +92,4 @@ input.onButtonPressed(Button.AB, function () {
     thermalPrinter.printLine("Total       3.50")
     thermalPrinter.setBold(false)
     thermalPrinter.feedLines(3)
-
-    // nothing is on paper until rotation is switched off again
-    thermalPrinter.setRotated(false)
 })

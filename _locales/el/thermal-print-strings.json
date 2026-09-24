@@ -33,7 +33,7 @@
     "thermalPrinter.setUnderline|block": "υπογράμμιση %on",
     "thermalPrinter.setUpsideDown|block": "ανάποδα %on",
     "thermalPrinter.setWide|block": "πλατιά %on",
-    "{id:category}Thermal Printer": "Θερμικός εκτυπωτής",
+    "thermalPrinter|block": "Θερμικός εκτυπωτής",
     "{id:category}ThermalPrinter": "Θερμικός εκτυπωτής",
     "{id:group}Alignment": "Στοίχιση",
     "{id:group}Barcodes": "Γραμμωτοί κώδικες",
