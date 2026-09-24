@@ -70,3 +70,24 @@ input.onButtonPressed(Button.A, function () {
 input.onButtonPressed(Button.B, function () {
     thermalPrinter.printTestPage()
 })
+
+// Buttons A+B print the same receipt for a printer mounted upside down.
+input.onButtonPressed(Button.AB, function () {
+    thermalPrinter.setRotated(true)
+
+    thermalPrinter.setAlignment(thermalPrinter.Alignment.Centre)
+    thermalPrinter.setTextSize(2, 2)
+    thermalPrinter.printLine("SHOP")
+    thermalPrinter.setTextSize(1, 1)
+
+    thermalPrinter.setAlignment(thermalPrinter.Alignment.Left)
+    thermalPrinter.printLine("Item A      1.00")
+    thermalPrinter.printLine("Item B      2.50")
+    thermalPrinter.setBold(true)
+    thermalPrinter.printLine("Total       3.50")
+    thermalPrinter.setBold(false)
+    thermalPrinter.feedLines(3)
+
+    // nothing is on paper until rotation is switched off again
+    thermalPrinter.setRotated(false)
+})

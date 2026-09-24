@@ -12,6 +12,7 @@
     "thermalPrinter.QrErrorCorrection.Quartile|block": "Q (25%)",
     "thermalPrinter.connect|block": "verbind printer|TX-pin %tx|baudrate %baud||vrije RX-pin %rx",
     "thermalPrinter.feedLines|block": "voer %lines regels door",
+    "thermalPrinter.flushRotated|block": "print verzamelde regels",
     "thermalPrinter.printBarcode|block": "print barcode %format|%data",
     "thermalPrinter.printLine|block": "print regel %text",
     "thermalPrinter.printQrCode|block": "print QR-code %data||grootte %moduleSize|foutcorrectie %ecc",
@@ -26,6 +27,7 @@
     "thermalPrinter.setHeat|block": "stel printerhitte in|punten %dots|tijd %time|interval %interval",
     "thermalPrinter.setInverse|block": "invers %on",
     "thermalPrinter.setLargeFont|block": "groot lettertype %on",
+    "thermalPrinter.setRotated|block": "180 graden draaien %on",
     "thermalPrinter.setSmallFont|block": "klein lettertype %on",
     "thermalPrinter.setTextSize|block": "stel tekstgrootte in|breedte %width|hoogte %height",
     "thermalPrinter.setUnderline|block": "onderstreept %on",
@@ -38,6 +40,7 @@
     "{id:group}Printer": "Printer",
     "{id:group}Printing": "Printen",
     "{id:group}QR codes": "QR-codes",
+    "{id:group}Rotation": "Draaiing",
     "{id:group}Setup": "Instellen",
     "{id:group}Text style": "Tekststijl"
 }

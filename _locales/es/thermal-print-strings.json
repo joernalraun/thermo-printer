@@ -12,6 +12,7 @@
     "thermalPrinter.QrErrorCorrection.Quartile|block": "Q (25%)",
     "thermalPrinter.connect|block": "conectar impresora|pin TX %tx|baudios %baud||pin RX libre %rx",
     "thermalPrinter.feedLines|block": "avanzar %lines líneas",
+    "thermalPrinter.flushRotated|block": "imprimir líneas recogidas",
     "thermalPrinter.printBarcode|block": "imprimir código de barras %format|%data",
     "thermalPrinter.printLine|block": "imprimir línea %text",
     "thermalPrinter.printQrCode|block": "imprimir código QR %data||tamaño %moduleSize|corrección de errores %ecc",
@@ -26,6 +27,7 @@
     "thermalPrinter.setHeat|block": "ajustar calor de impresión|puntos %dots|tiempo %time|intervalo %interval",
     "thermalPrinter.setInverse|block": "inverso %on",
     "thermalPrinter.setLargeFont|block": "fuente grande %on",
+    "thermalPrinter.setRotated|block": "rotación de 180 grados %on",
     "thermalPrinter.setSmallFont|block": "fuente pequeña %on",
     "thermalPrinter.setTextSize|block": "ajustar tamaño de texto|ancho %width|alto %height",
     "thermalPrinter.setUnderline|block": "subrayado %on",
@@ -38,6 +40,7 @@
     "{id:group}Printer": "Impresora",
     "{id:group}Printing": "Impresión",
     "{id:group}QR codes": "Códigos QR",
+    "{id:group}Rotation": "Rotación",
     "{id:group}Setup": "Configuración",
     "{id:group}Text style": "Estilo de texto"
 }

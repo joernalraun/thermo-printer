@@ -8,7 +8,7 @@
  */
 
 //% color=#A0522D icon="" block="Thermal Printer"
-//% groups='["Setup", "Printing", "Text style", "Alignment", "Barcodes", "QR codes", "Printer", "others"]'
+//% groups='["Setup", "Printing", "Rotation", "Text style", "Alignment", "Barcodes", "QR codes", "Printer", "others"]'
 namespace thermalPrinter {
 
     export enum Alignment {
@@ -48,16 +48,135 @@ namespace thermalPrinter {
     // Printers before firmware 2.68 use a different command for inverse text.
     let firmwareVersion = 268
 
+    // When the printer hangs upside down the paper comes out the other way, so
+    // the line printed first ends up at the bottom. Rotated mode therefore
+    // collects whole lines and replays them backwards once it is switched off.
+    let rotated = false
+    let pendingLines: number[][] = []
+    let pendingStyles: number[][] = []
+    let currentLine: number[] = []
+    let currentStyle: number[] = []
+
+    // Reversing the line order would tear a text style away from the lines it
+    // covers, so every mode that stays in force is tracked in a slot and each
+    // line is replayed carrying the full set of modes it was written under.
+    const SLOT_BOLD = 0
+    const SLOT_UNDERLINE = 1
+    const SLOT_WIDE = 2
+    const SLOT_UPSIDE_DOWN = 3
+    const SLOT_SIZE = 4
+    const SLOT_PRINT_MODE = 5
+    const SLOT_INVERSE = 6
+    const SLOT_ALIGN = 7
+    const SLOT_BARCODE_TEXT = 8
+    const SLOT_COUNT = 9
+
+    let styleValues: number[] = []   // value per slot, -1 means "never set"
+    let slotUsed: boolean[] = []     // was this mode touched during this run
+
     /**
      * Send raw bytes to the printer. Using a buffer rather than a string keeps
      * bytes above 0x7F (e.g. 0xFF in the heat settings) intact.
      */
-    function send(bytes: number[]): void {
+    function writeBytes(bytes: number[]): void {
         const buf = pins.createBuffer(bytes.length)
         for (let i = 0; i < bytes.length; i++) {
             buf.setUint8(i, bytes[i] & 0xFF)
         }
         serial.writeBuffer(buf)
+    }
+
+    function resetStyleTracking(): void {
+        styleValues = []
+        slotUsed = []
+        for (let i = 0; i < SLOT_COUNT; i++) {
+            styleValues.push(-1)
+            slotUsed.push(false)
+        }
+    }
+
+    /** The printer command that puts one slot into a given state. */
+    function styleBytes(slot: number, value: number): number[] {
+        if (slot == SLOT_BOLD) return [ESC, 0x45, value]
+        if (slot == SLOT_UNDERLINE) return [ESC, 0x2D, value]
+        if (slot == SLOT_WIDE) return [ESC, value ? 0x0E : 0x14]
+        if (slot == SLOT_UPSIDE_DOWN) return [ESC, 0x7B, value]
+        if (slot == SLOT_SIZE) return [GS, 0x21, value]
+        if (slot == SLOT_PRINT_MODE) return [ESC, 0x21, value]
+        if (slot == SLOT_INVERSE) return [GS, 0x42, value]
+        if (slot == SLOT_ALIGN) return [ESC, 0x61, value]
+        return [GS, 0x48, value]
+    }
+
+    function snapshotStyles(): number[] {
+        const r: number[] = []
+        for (let i = 0; i < SLOT_COUNT; i++) {
+            r.push(styleValues[i])
+        }
+        return r
+    }
+
+    function collect(bytes: number[]): void {
+        for (let i = 0; i < bytes.length; i++) {
+            // note the modes in force as each new line opens
+            if (currentLine.length == 0) {
+                currentStyle = snapshotStyles()
+            }
+            currentLine.push(bytes[i])
+            if (bytes[i] == 0x0A) {
+                pendingStyles.push(currentStyle)
+                pendingLines.push(currentLine)
+                currentStyle = []
+                currentLine = []
+            }
+        }
+    }
+
+    /**
+     * Everything the extension sends goes through here: straight out to the
+     * printer, or into the line collector while rotated mode is on.
+     */
+    function send(bytes: number[]): void {
+        if (!rotated) {
+            writeBytes(bytes)
+            return
+        }
+        collect(bytes)
+    }
+
+    /**
+     * Send a mode that stays in force until it is changed. It goes out with the
+     * line it appears on, and is remembered so later lines can repeat it.
+     */
+    function sendStyle(slot: number, value: number): void {
+        const bytes = styleBytes(slot, value)
+        if (!rotated) {
+            writeBytes(bytes)
+            return
+        }
+        collect(bytes)
+        styleValues[slot] = value
+        slotUsed[slot] = true
+    }
+
+    function sendBuffer(buf: Buffer): void {
+        if (!rotated) {
+            serial.writeBuffer(buf)
+            return
+        }
+        const bytes: number[] = []
+        for (let i = 0; i < buf.length; i++) {
+            bytes.push(buf.getUint8(i))
+        }
+        send(bytes)
+    }
+
+    function sendString(text: string): void {
+        if (!rotated) {
+            serial.writeString(text)
+            return
+        }
+        sendBuffer(control.createBufferFromUTF8(text))
     }
 
     // ---------------------------------------------------------------- Setup
@@ -76,6 +195,12 @@ namespace thermalPrinter {
     export function connect(tx: SerialPin = SerialPin.P8, baud: BaudRate = BaudRate.BaudRate19200, rx: SerialPin = SerialPin.P1): void {
         serial.redirect(tx, rx, baud)
         basic.pause(100)
+        rotated = false
+        pendingLines = []
+        pendingStyles = []
+        currentLine = []
+        currentStyle = []
+        resetStyleTracking()
         // increase printing temperature and time, as in the original program
         setHeat(7, 255, 255)
     }
@@ -125,7 +250,7 @@ namespace thermalPrinter {
     //% text.defl="Hello"
     //% group="Printing" weight=100 blockGap=8
     export function printLine(text: string): void {
-        serial.writeString(text + "\n")
+        sendString(text + "\n")
     }
 
     /**
@@ -138,7 +263,7 @@ namespace thermalPrinter {
     //% text.defl="Hello"
     //% group="Printing" weight=90 blockGap=8
     export function printText(text: string): void {
-        serial.writeString(text)
+        sendString(text)
     }
 
     /**
@@ -151,8 +276,77 @@ namespace thermalPrinter {
     //% group="Printing" weight=80
     export function feedLines(lines: number): void {
         for (let i = 0; i < lines; i++) {
-            serial.writeString("\n")
+            sendString("\n")
         }
+    }
+
+    // ------------------------------------------------------------- Rotation
+
+    /**
+     * Print everything turned by 180 degrees, for a printer that is mounted
+     * upside down. Switch it on once after connecting.
+     * Because the paper then leaves the printer the other way round, the last
+     * line has to be printed first - so nothing appears on paper until you
+     * switch rotation off again or use the print collected lines block.
+     */
+    //% blockId=thermalprinter_setrotated
+    //% block="set 180 degree rotation %on"
+    //% on.shadow="toggleOnOff" on.defl=true
+    //% group="Rotation" weight=100 blockGap=8
+    export function setRotated(on: boolean): void {
+        if (on == rotated) return
+        if (on) {
+            rotated = true
+            pendingLines = []
+            pendingStyles = []
+            currentLine = []
+            currentStyle = []
+            resetStyleTracking()
+        } else {
+            flushRotated()
+            rotated = false
+        }
+    }
+
+    /**
+     * Print the lines collected so far upside down and in reverse order, and
+     * keep collecting. Use this to print one receipt after another without
+     * switching rotation off in between.
+     */
+    //% blockId=thermalprinter_flushrotated
+    //% block="print collected lines"
+    //% group="Rotation" weight=90
+    export function flushRotated(): void {
+        if (!rotated) return
+
+        // text that never got a new line still has to go out
+        if (currentLine.length > 0) {
+            pendingStyles.push(currentStyle)
+            pendingLines.push(currentLine)
+            currentStyle = []
+            currentLine = []
+        }
+        const lines = pendingLines
+        const styles = pendingStyles
+        pendingLines = []
+        pendingStyles = []
+
+        // write straight to the printer from here on, not back into the buffer
+        rotated = false
+        writeBytes([ESC, 0x7B, 0x01])
+        for (let i = lines.length - 1; i >= 0; i--) {
+            const style = styles[i]
+            for (let slot = 0; slot < SLOT_COUNT; slot++) {
+                // a mode used anywhere in this run has to be stated on every
+                // line, otherwise it leaks backwards into the lines before it
+                if (!slotUsed[slot]) continue
+                const value = style[slot] < 0 ? 0 : style[slot]
+                writeBytes(styleBytes(slot, value))
+            }
+            writeBytes(lines[i])
+        }
+        writeBytes([ESC, 0x7B, 0x00])
+        rotated = true
     }
 
     // ----------------------------------------------------------- Text style
@@ -165,7 +359,7 @@ namespace thermalPrinter {
     //% on.shadow="toggleOnOff" on.defl=true
     //% group="Text style" weight=100 blockGap=8
     export function setBold(on: boolean): void {
-        send([ESC, 0x45, on ? 0x01 : 0x00])
+        sendStyle(SLOT_BOLD, on ? 0x01 : 0x00)
     }
 
     /**
@@ -176,7 +370,7 @@ namespace thermalPrinter {
     //% on.shadow="toggleOnOff" on.defl=true
     //% group="Text style" weight=90 blockGap=8
     export function setUnderline(on: boolean): void {
-        send([ESC, 0x2D, on ? 0x02 : 0x00])
+        sendStyle(SLOT_UNDERLINE, on ? 0x02 : 0x00)
     }
 
     /**
@@ -187,7 +381,7 @@ namespace thermalPrinter {
     //% on.shadow="toggleOnOff" on.defl=true
     //% group="Text style" weight=80 blockGap=8
     export function setWide(on: boolean): void {
-        send([ESC, on ? 0x0E : 0x14])
+        sendStyle(SLOT_WIDE, on ? 0x01 : 0x00)
     }
 
     /**
@@ -198,7 +392,7 @@ namespace thermalPrinter {
     //% on.shadow="toggleOnOff" on.defl=true
     //% group="Text style" weight=70 blockGap=8
     export function setUpsideDown(on: boolean): void {
-        send([ESC, 0x7B, on ? 0x01 : 0x00])
+        sendStyle(SLOT_UPSIDE_DOWN, on ? 0x01 : 0x00)
     }
 
     /**
@@ -220,7 +414,7 @@ namespace thermalPrinter {
         if (w > 8) w = 8
         if (h < 1) h = 1
         if (h > 8) h = 8
-        send([GS, 0x21, ((w - 1) << 4) | (h - 1)])
+        sendStyle(SLOT_SIZE, ((w - 1) << 4) | (h - 1))
     }
 
     /**
@@ -232,7 +426,7 @@ namespace thermalPrinter {
     //% on.shadow="toggleOnOff" on.defl=true
     //% group="Text style" weight=60 blockGap=8
     export function setLargeFont(on: boolean): void {
-        send([GS, 0x21, on ? 0x11 : 0x00])
+        sendStyle(SLOT_SIZE, on ? 0x11 : 0x00)
     }
 
     /**
@@ -246,7 +440,7 @@ namespace thermalPrinter {
     //% on.shadow="toggleOnOff" on.defl=true
     //% group="Text style" weight=50 blockGap=8
     export function setDoubleHeight(on: boolean): void {
-        send([ESC, 0x21, on ? 0x10 : 0x00])
+        sendStyle(SLOT_PRINT_MODE, on ? 0x10 : 0x00)
     }
 
     /**
@@ -259,7 +453,7 @@ namespace thermalPrinter {
     //% on.shadow="toggleOnOff" on.defl=true
     //% group="Text style" weight=40 blockGap=8
     export function setSmallFont(on: boolean): void {
-        send([ESC, 0x21, on ? 0x01 : 0x00])
+        sendStyle(SLOT_PRINT_MODE, on ? 0x01 : 0x00)
     }
 
     /**
@@ -273,9 +467,9 @@ namespace thermalPrinter {
     //% group="Text style" weight=30
     export function setInverse(on: boolean): void {
         if (firmwareVersion >= 268) {
-            send([GS, 0x42, on ? 0x01 : 0x00])
+            sendStyle(SLOT_INVERSE, on ? 0x01 : 0x00)
         } else {
-            send([ESC, 0x21, on ? 0x02 : 0x00])
+            sendStyle(SLOT_PRINT_MODE, on ? 0x02 : 0x00)
         }
     }
 
@@ -289,7 +483,13 @@ namespace thermalPrinter {
     //% block="align %alignment"
     //% group="Alignment" weight=100
     export function setAlignment(alignment: Alignment): void {
-        send([ESC, 0x61, alignment])
+        let side = alignment
+        if (rotated) {
+            // turning the paper around swaps the two edges over
+            if (side == Alignment.Left) side = Alignment.Right
+            else if (side == Alignment.Right) side = Alignment.Left
+        }
+        sendStyle(SLOT_ALIGN, side)
     }
 
     // ------------------------------------------------------------- Barcodes
@@ -307,7 +507,7 @@ namespace thermalPrinter {
     //% group="Barcodes" weight=100 blockGap=8
     export function printBarcode(format: Barcode, data: string): void {
         send([GS, 0x6B, format])
-        serial.writeString(data)
+        sendString(data)
         send([0x00])
     }
 
@@ -319,7 +519,7 @@ namespace thermalPrinter {
     //% on.shadow="toggleOnOff" on.defl=true
     //% group="Barcodes" weight=90
     export function setBarcodeHumanReadable(on: boolean): void {
-        send([GS, 0x48, on ? 0x02 : 0x00])
+        sendStyle(SLOT_BARCODE_TEXT, on ? 0x02 : 0x00)
     }
 
     // ------------------------------------------------------------ QR codes
@@ -354,7 +554,7 @@ namespace thermalPrinter {
         const payload = control.createBufferFromUTF8(data)
         const len = payload.length + 3
         send([GS, 0x28, 0x6B, len & 0xFF, (len >> 8) & 0xFF, 0x31, 0x50, 0x30])
-        serial.writeBuffer(payload)
+        sendBuffer(payload)
         // GS ( k <pL pH> 49 81 48 - print what is stored
         send([GS, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x51, 0x30])
     }
@@ -369,6 +569,9 @@ namespace thermalPrinter {
     //% group="Printer" weight=100 blockGap=8
     export function reset(): void {
         send([ESC, 0x40])
+        for (let i = 0; i < SLOT_COUNT; i++) {
+            styleValues[i] = -1
+        }
     }
 
     /**

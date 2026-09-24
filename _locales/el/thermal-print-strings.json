@@ -12,6 +12,7 @@
     "thermalPrinter.QrErrorCorrection.Quartile|block": "Q (25%)",
     "thermalPrinter.connect|block": "σύνδεση εκτυπωτή|ακίδα TX %tx|ρυθμός baud %baud||ελεύθερη ακίδα RX %rx",
     "thermalPrinter.feedLines|block": "τροφοδοσία %lines γραμμών",
+    "thermalPrinter.flushRotated|block": "εκτύπωση συγκεντρωμένων γραμμών",
     "thermalPrinter.printBarcode|block": "εκτύπωση γραμμωτού κώδικα %format|%data",
     "thermalPrinter.printLine|block": "εκτύπωση γραμμής %text",
     "thermalPrinter.printQrCode|block": "εκτύπωση κωδικού QR %data||μέγεθος %moduleSize|διόρθωση σφαλμάτων %ecc",
@@ -26,6 +27,7 @@
     "thermalPrinter.setHeat|block": "ρύθμιση θερμότητας|κουκκίδες %dots|χρόνος %time|διάστημα %interval",
     "thermalPrinter.setInverse|block": "αντιστροφή χρωμάτων %on",
     "thermalPrinter.setLargeFont|block": "μεγάλη γραμματοσειρά %on",
+    "thermalPrinter.setRotated|block": "περιστροφή 180 μοιρών %on",
     "thermalPrinter.setSmallFont|block": "μικρή γραμματοσειρά %on",
     "thermalPrinter.setTextSize|block": "μέγεθος κειμένου|πλάτος %width|ύψος %height",
     "thermalPrinter.setUnderline|block": "υπογράμμιση %on",
@@ -38,6 +40,7 @@
     "{id:group}Printer": "Εκτυπωτής",
     "{id:group}Printing": "Εκτύπωση",
     "{id:group}QR codes": "Κωδικοί QR",
+    "{id:group}Rotation": "Περιστροφή",
     "{id:group}Setup": "Ρυθμίσεις",
     "{id:group}Text style": "Στυλ κειμένου"
 }
