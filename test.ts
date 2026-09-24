@@ -1,7 +1,7 @@
 // Demo: the original thermal_print.py demo, rebuilt with this extension.
 // Press button A to print a sample of every mode.
 
-thermalPrinter.connect(SerialPin.P8, BaudRate.BaudRate19200)
+thermalPrinter.connect(SerialPin.P8, BaudRate.BaudRate9600)
 
 // For a printer mounted upside down, switch this on once and leave it on:
 // thermalPrinter.setRotated(true)

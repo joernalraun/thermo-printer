@@ -1,7 +1,7 @@
 {
     "thermalPrinter": "Bloques para imprimir en una impresora térmica de tickets.",
     "thermalPrinter.connect": "Conecta la impresora térmica. Llámalo una vez al principio del programa.",
-    "thermalPrinter.connect|param|baud": "la velocidad de la impresora, ej: BaudRate.BaudRate19200",
+    "thermalPrinter.connect|param|baud": "la velocidad de la impresora, ej: BaudRate.BaudRate9600",
     "thermalPrinter.connect|param|rx": "un pin libre, que NO se cablea, ej: SerialPin.P1",
     "thermalPrinter.connect|param|tx": "el pin conectado a la entrada RX de la impresora, ej: SerialPin.P8",
     "thermalPrinter.feedLines": "Avanza líneas en blanco e imprime lo que quede en memoria.",
@@ -16,7 +16,7 @@
     "thermalPrinter.printQrCode|param|data": "el texto o la URL, ej: \"https://calliope.cc\"",
     "thermalPrinter.printQrCode|param|ecc": "cuánto puede dañarse el código y seguir siendo legible",
     "thermalPrinter.printQrCode|param|moduleSize": "cuántos puntos de ancho tiene cada cuadrito, de 1 a 16, ej: 6",
-    "thermalPrinter.printTestPage": "Imprime la página de prueba de la impresora con juegos de caracteres, baudios y versión de firmware. Si no sale nada, mantén pulsado el botón de avance al encenderla.",
+    "thermalPrinter.printTestPage": "Pide a la impresora que imprima su propia página de prueba con juegos de caracteres, baudios y versión de firmware. No hay un comando que entiendan todas las impresoras, así que se envían los tres conocidos. Si la impresora no conoce ninguno no pasa nada: mantén entonces pulsado el botón de avance al encenderla, lo que funciona en todas estas impresoras.",
     "thermalPrinter.printText": "Envía texto sin imprimirlo. No sale nada hasta que llega un salto de línea, así se pueden mezclar estilos en una misma línea.",
     "thermalPrinter.printText|param|text": "el texto que se envía, ej: \"Hola\"",
     "thermalPrinter.reset": "Reinicia la impresora y borra todos los estilos.",

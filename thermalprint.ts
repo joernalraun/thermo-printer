@@ -192,15 +192,15 @@ namespace thermalPrinter {
     /**
      * Connect to a thermal printer. Call this once at the start of your program.
      * @param tx the pin wired to the printer's RX line - go by the label, not the wire colour, eg: SerialPin.P8
-     * @param baud the speed of the printer, eg: BaudRate.BaudRate19200
+     * @param baud the speed of the printer, eg: BaudRate.BaudRate9600
      * @param rx a spare pin, left unwired - serial.redirect needs one, the printer does not, eg: SerialPin.P1
      */
     //% blockId=thermalprinter_connect
     //% block="connect printer|TX pin %tx|baud rate %baud||spare RX pin %rx"
-    //% tx.defl=SerialPin.P8 baud.defl=BaudRate.BaudRate19200 rx.defl=SerialPin.P1
+    //% tx.defl=SerialPin.P8 baud.defl=BaudRate.BaudRate9600 rx.defl=SerialPin.P1
     //% expandableArgumentMode="toggle"
     //% group="Setup" weight=100 blockGap=8
-    export function connect(tx: SerialPin = SerialPin.P8, baud: BaudRate = BaudRate.BaudRate19200, rx: SerialPin = SerialPin.P1): void {
+    export function connect(tx: SerialPin = SerialPin.P8, baud: BaudRate = BaudRate.BaudRate9600, rx: SerialPin = SerialPin.P1): void {
         serial.redirect(tx, rx, baud)
         basic.pause(100)
         rotated = false
@@ -609,22 +609,22 @@ namespace thermalPrinter {
     }
 
     /**
-     * Print the printer's own test page, showing the character sets,
+     * Ask the printer to print its own test page, showing the character sets,
      * baud rate, temperature and firmware version.
-     * Printers differ in how they are asked for this, so the command follows
-     * the firmware version - see setFirmwareVersion. If nothing comes out,
-     * hold the paper feed button down while switching the printer on.
+     * There is no single command every printer understands, so all three known
+     * ones are sent. A printer that knows none of them simply ignores this -
+     * hold the paper feed button down while switching it on instead, which
+     * works on every one of these printers.
      */
     //% blockId=thermalprinter_test
     //% block="print printer test page"
     //% group="Printer" weight=90
     export function printTestPage(): void {
-        if (firmwareVersion >= 268) {
-            // GS ( A <pL pH> 0 2 - the ESC/POS "execute test print" command
-            send([GS, 0x28, 0x41, 0x02, 0x00, 0x00, 0x02])
-        } else {
-            // DC2 T - the older command, as used by thermal_print.py
-            send([0x12, 0x54])
-        }
+        // DC2 T - the command in thermal_print.py, used by CSN-A2 style printers
+        send([0x12, 0x54])
+        // GS ( A <pL pH> n m - the ESC/POS "execute test print" command, whose
+        // parameters some printers take as numbers and others as digit characters
+        send([GS, 0x28, 0x41, 0x02, 0x00, 0x00, 0x02])
+        send([GS, 0x28, 0x41, 0x02, 0x00, 0x30, 0x32])
     }
 }

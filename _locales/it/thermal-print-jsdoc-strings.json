@@ -1,7 +1,7 @@
 {
     "thermalPrinter": "Blocchi per stampare su una stampante termica per scontrini.",
     "thermalPrinter.connect": "Collega la stampante termica. Da chiamare una volta all'inizio del programma.",
-    "thermalPrinter.connect|param|baud": "la velocità della stampante, es: BaudRate.BaudRate19200",
+    "thermalPrinter.connect|param|baud": "la velocità della stampante, es: BaudRate.BaudRate9600",
     "thermalPrinter.connect|param|rx": "un pin libero, che NON va collegato, es: SerialPin.P1",
     "thermalPrinter.connect|param|tx": "il pin collegato all'ingresso RX della stampante, es: SerialPin.P8",
     "thermalPrinter.feedLines": "Fa avanzare la carta di alcune righe e stampa quello che è rimasto in memoria.",
@@ -16,7 +16,7 @@
     "thermalPrinter.printQrCode|param|data": "il testo o l'URL, es: \"https://calliope.cc\"",
     "thermalPrinter.printQrCode|param|ecc": "quanto il codice può essere rovinato restando leggibile",
     "thermalPrinter.printQrCode|param|moduleSize": "larghezza di un quadratino in punti, da 1 a 16, es: 6",
-    "thermalPrinter.printTestPage": "Stampa la pagina di test della stampante con set di caratteri, baud e versione del firmware. Se non esce nulla, tenere premuto il tasto di avanzamento all'accensione.",
+    "thermalPrinter.printTestPage": "Chiede alla stampante di stampare la propria pagina di test con set di caratteri, baud e versione del firmware. Non esiste un comando capito da tutte le stampanti, quindi vengono inviati tutti e tre quelli noti. Se la stampante non ne conosce nessuno non succede nulla: tenere allora premuto il tasto di avanzamento carta all'accensione, cosa che funziona su tutte queste stampanti.",
     "thermalPrinter.printText": "Invia il testo senza stamparlo. Niente esce finché non arriva un a capo, così si possono mischiare più stili nella stessa riga.",
     "thermalPrinter.printText|param|text": "il testo da inviare, es: \"Ciao\"",
     "thermalPrinter.reset": "Reimposta la stampante e cancella tutti gli stili.",

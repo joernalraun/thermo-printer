@@ -1,7 +1,7 @@
 {
     "thermalPrinter": "Blocs pour imprimer sur une imprimante thermique à ticket.",
     "thermalPrinter.connect": "Connecte l'imprimante thermique. À appeler une fois au début du programme.",
-    "thermalPrinter.connect|param|baud": "la vitesse de l'imprimante, ex : BaudRate.BaudRate19200",
+    "thermalPrinter.connect|param|baud": "la vitesse de l'imprimante, ex : BaudRate.BaudRate9600",
     "thermalPrinter.connect|param|rx": "une broche libre, qui n'est PAS câblée, ex : SerialPin.P1",
     "thermalPrinter.connect|param|tx": "la broche reliée à l'entrée RX de l'imprimante, ex : SerialPin.P8",
     "thermalPrinter.feedLines": "Fait avancer le papier de quelques lignes et imprime ce qui reste en mémoire.",
@@ -16,7 +16,7 @@
     "thermalPrinter.printQrCode|param|data": "le texte ou l'URL, ex : \"https://calliope.cc\"",
     "thermalPrinter.printQrCode|param|ecc": "à quel point le code peut être abîmé tout en restant lisible",
     "thermalPrinter.printQrCode|param|moduleSize": "largeur d'un carré en points, 1 à 16, ex : 6",
-    "thermalPrinter.printTestPage": "Imprime la page de test de l'imprimante : jeux de caractères, débit et version du micrologiciel. Si rien ne sort, maintenir le bouton d'avance papier à l'allumage.",
+    "thermalPrinter.printTestPage": "Demande à l'imprimante d'imprimer sa propre page de test avec les jeux de caractères, le débit et la version du micrologiciel. Aucune commande n'est comprise par toutes les imprimantes, les trois connues sont donc envoyées. Si l'imprimante n'en connaît aucune, rien ne se passe : maintenir alors le bouton d'avance papier à l'allumage, ce qui fonctionne sur toutes ces imprimantes.",
     "thermalPrinter.printText": "Envoie du texte sans l'imprimer. Rien ne sort avant un saut de ligne, ce qui permet de mélanger les styles sur une même ligne.",
     "thermalPrinter.printText|param|text": "le texte à envoyer, ex : \"Bonjour\"",
     "thermalPrinter.reset": "Réinitialise l'imprimante et efface tous les styles.",

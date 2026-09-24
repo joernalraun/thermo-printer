@@ -1,7 +1,7 @@
 {
     "thermalPrinter": "Blöcke für einen seriellen Thermo-Bondrucker.",
     "thermalPrinter.connect": "Verbindet den Thermodrucker. Einmal am Programmanfang aufrufen.",
-    "thermalPrinter.connect|param|baud": "die Geschwindigkeit des Druckers, z.B.: BaudRate.BaudRate19200",
+    "thermalPrinter.connect|param|baud": "die Geschwindigkeit des Druckers, z.B.: BaudRate.BaudRate9600",
     "thermalPrinter.connect|param|rx": "ein freier Pin, der NICHT verkabelt wird, z.B.: SerialPin.P1",
     "thermalPrinter.connect|param|tx": "der Pin am RX-Anschluss des Druckers, z.B.: SerialPin.P8",
     "thermalPrinter.feedLines": "Schiebt leere Zeilen vor und druckt dabei alles, was noch im Puffer steht.",
@@ -16,7 +16,7 @@
     "thermalPrinter.printQrCode|param|data": "der Text oder die URL, z.B.: \"https://calliope.cc\"",
     "thermalPrinter.printQrCode|param|ecc": "wie stark der Code beschädigt sein darf und trotzdem lesbar bleibt",
     "thermalPrinter.printQrCode|param|moduleSize": "wie viele Druckpunkte ein Kästchen breit ist, 1 bis 16, z.B.: 6",
-    "thermalPrinter.printTestPage": "Druckt die Testseite des Druckers mit Zeichensätzen, Baudrate und Firmware-Version. Kommt nichts, die Papiertaste beim Einschalten gedrückt halten.",
+    "thermalPrinter.printTestPage": "Bittet den Drucker, seine eigene Testseite mit Zeichensätzen, Baudrate und Firmware-Version zu drucken. Es gibt keinen Befehl, den alle Drucker verstehen, daher werden alle drei bekannten gesendet. Kennt der Drucker keinen davon, passiert nichts - dann die Papiervorschub-Taste beim Einschalten gedrückt halten, das funktioniert bei jedem dieser Drucker.",
     "thermalPrinter.printText": "Schickt Text an den Drucker, ohne ihn zu drucken. Erst ein Zeilenumbruch druckt ihn - so lassen sich mehrere Schriftarten in einer Zeile mischen.",
     "thermalPrinter.printText|param|text": "der Text, der gesendet wird, z.B.: \"Hallo\"",
     "thermalPrinter.reset": "Setzt den Drucker zurück und löscht alle Schriftarten.",
