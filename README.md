@@ -1,12 +1,13 @@
-# Thermodrucker / Thermal Printer
+# Thermodrucker Erweiterung
 
-MakeCode-Erweiterung zum Drucken auf einem seriellen Thermo-Bondrucker
-(Kassenbon-Drucker, wie sie Pimoroni, Sparkfun oder Adafruit verkaufen) mit dem
+MakeCode-Erweiterung zum Drucken auf einem seriellen Thermo-Bondrucker mit dem
 Calliope mini.
 
 Die Erweiterung bietet dieselben Funktionen wie das MicroPython-Modul
 [`thermal_print.py`](../thermal_print.py) von Giles Booth (@blogmywiki) –
 jeder Block schickt genau dieselben ESC/POS-Steuercodes an den Drucker.
+Es gibt inzwischen eine neuere Firmware, dahingehend wurden einige Blöcke und
+Optionen angepasst! Der Test-Druck zeigt die installierte Firmware-Version an.
 
 ## Verkabelung
 
@@ -22,7 +23,7 @@ GND von Board, Drucker und Netzteil müssen verbunden sein.
 ## Benutzung
 
 ```blocks
-thermalPrinter.connect(SerialPin.P8, BaudRate.BaudRate19200)
+thermalPrinter.connect(SerialPin.P8, BaudRate.BaudRate9600)
 
 input.onButtonPressed(Button.A, function () {
     thermalPrinter.setAlignment(thermalPrinter.Alignment.Centre)
@@ -41,6 +42,7 @@ Heizdauer hoch (`setHeat(7, 255, 255)`).
 Die Baudrate steht bei den meisten Druckern auf 19200. Zum Nachsehen die
 Papiervorschub-Taste beim Einschalten gedrückt halten: der Drucker druckt seine
 Einstellungen aus.
+Wir haben die Baudrate auf 9600 gestellt und damit gute Ergebnisse erzielt.
 
 ## Blöcke
 
@@ -107,7 +109,7 @@ Zum Bearbeiten in MakeCode:
 * **Importieren** und dann **Importiere URL** anklicken
 * die URL dieses Repositories einfügen und auf Importieren klicken
 
-## Lizenz und Dank
+## Lizenz
 
 MIT. Der ursprüngliche MicroPython-Code stammt von
 [Giles Booth (@blogmywiki)](http://www.suppertime.co.uk/blogmywiki/2016/12/microbit-thermal/),
