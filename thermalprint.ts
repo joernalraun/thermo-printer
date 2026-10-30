@@ -74,6 +74,11 @@ namespace thermalPrinter {
     let styleValues: number[] = []   // value per slot, -1 means "never set"
     let slotUsed: boolean[] = []     // was this mode touched during this run
 
+    // Normally everything goes out of the board's one serial port. A program
+    // that drives the printer from somewhere else - a second serial port, say -
+    // can take that over, see usePort.
+    let port: (data: Buffer) => void = null
+
     // A collected page cannot be printed until its last line is known, so the
     // extension prints it once the program has stopped adding to it.
     const QUIET_MS = 300
@@ -90,7 +95,36 @@ namespace thermalPrinter {
         for (let i = 0; i < bytes.length; i++) {
             buf.setUint8(i, bytes[i] & 0xFF)
         }
-        serial.writeBuffer(buf)
+        writeOut(buf)
+    }
+
+    /** The one place where bytes actually leave for the printer. */
+    function writeOut(buf: Buffer): void {
+        if (port) port(buf)
+        else serial.writeBuffer(buf)
+    }
+
+    /**
+     * Send the printer's data somewhere other than the board's main serial
+     * port - a second serial port, for instance, which leaves the main one
+     * free for USB. Call it instead of the connect block, and set up that
+     * other port yourself.
+     * @param handler takes the bytes and passes them to the printer
+     */
+    //% blockId=thermalprinter_useport
+    //% block="send printer data to $data"
+    //% draggableParameters="reporter"
+    //% group="Setup" weight=70
+    //% advanced=true
+    export function usePort(handler: (data: Buffer) => void): void {
+        port = handler
+        rotated = false
+        pendingLines = []
+        pendingStyles = []
+        currentLine = []
+        currentStyle = []
+        resetStyleTracking()
+        setHeat(7, 255, 255)
     }
 
     function resetStyleTracking(): void {
@@ -169,7 +203,7 @@ namespace thermalPrinter {
 
     function sendBuffer(buf: Buffer): void {
         if (!rotated) {
-            serial.writeBuffer(buf)
+            writeOut(buf)
             return
         }
         const bytes: number[] = []
@@ -181,7 +215,8 @@ namespace thermalPrinter {
 
     function sendString(text: string): void {
         if (!rotated) {
-            serial.writeString(text)
+            if (port) writeOut(control.createBufferFromUTF8(text))
+            else serial.writeString(text)
             return
         }
         sendBuffer(control.createBufferFromUTF8(text))
@@ -201,6 +236,7 @@ namespace thermalPrinter {
     //% expandableArgumentMode="toggle"
     //% group="Setup" weight=100 blockGap=8
     export function connect(tx: SerialPin = SerialPin.P8, baud: BaudRate = BaudRate.BaudRate9600, rx: SerialPin = SerialPin.P1): void {
+        port = null
         serial.redirect(tx, rx, baud)
         basic.pause(100)
         rotated = false
