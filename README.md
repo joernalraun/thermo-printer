@@ -13,7 +13,7 @@ Optionen angepasst! Der Test-Druck zeigt die installierte Firmware-Version an.
 
 | Drucker | Calliope mini |
 | --- | --- |
-| RX (Daten) | TX-Pin, Standard **P8** |
+| RX (Daten) | TX-Pin, Standard **P17** |
 | GND | GND (gemeinsam mit dem Netzteil!) |
 | VH / VCC | **5–9 V, 2 A Netzteil** – *nicht* vom Board versorgen |
 
