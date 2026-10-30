@@ -8,7 +8,7 @@
  */
 
 //% color=#A0522D icon="" block="Thermal Printer"
-//% groups='["Setup", "Printing", "Rotation", "Text style", "Alignment", "Barcodes", "QR codes", "Printer", "others"]'
+//% groups='["Setup", "Printing", "Rotation", "Text style", "Alignment", "Barcodes", "QR codes", "Images", "Printer", "others"]'
 namespace thermalPrinter {
 
     export enum Alignment {
@@ -591,6 +591,46 @@ namespace thermalPrinter {
         sendBuffer(payload)
         // GS ( k <pL pH> 49 81 48 - print what is stored
         send([GS, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x51, 0x30])
+    }
+
+    // --------------------------------------------------------------- Images
+
+    /**
+     * Print a strip of a black and white picture.
+     * The data holds one bit per dot, 1 meaning black, packed eight dots to a
+     * byte from left to right. A picture is printed strip by strip, so a whole
+     * one never has to fit in the board's memory at once.
+     * The print head is 384 dots wide, which is 48 bytes per line.
+     * @param data the dots of this strip, a whole number of lines
+     * @param bytesPerLine how many bytes make up one line, eg: 48
+     */
+    //% blockId=thermalprinter_printimageband
+    //% block="print picture strip %data||%bytesPerLine bytes per line"
+    //% bytesPerLine.defl=48
+    //% group="Images" weight=100
+    export function printImageStrip(data: Buffer, bytesPerLine: number = 48): void {
+        if (!data || data.length == 0) return
+        let width = bytesPerLine | 0
+        if (width < 1) width = 1
+        const lines = (data.length / width) | 0
+        if (lines < 1) return
+
+        // GS v 0 m xL xH yL yH - print a raster bit image
+        send([GS, 0x76, 0x30, 0x00,
+            width & 0xFF, (width >> 8) & 0xFF,
+            lines & 0xFF, (lines >> 8) & 0xFF])
+        sendBuffer(data)
+    }
+
+    /**
+     * How many bytes one line of a picture takes on this printer.
+     * 384 dots across the paper, eight dots to a byte.
+     */
+    //% blockId=thermalprinter_imagelinebytes
+    //% block="bytes per picture line"
+    //% group="Images" weight=90
+    export function bytesPerImageLine(): number {
+        return 48
     }
 
     // -------------------------------------------------------------- Printer
