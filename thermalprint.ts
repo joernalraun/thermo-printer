@@ -124,7 +124,10 @@ namespace thermalPrinter {
         currentLine = []
         currentStyle = []
         resetStyleTracking()
-        setHeat(7, 255, 255)
+        // Gentler than the connect block, which inherits the original
+        // program's settings for text. Pictures cover far more of the paper
+        // in black, and at that heat the head cuts out part way down the page.
+        setHeat(7, 120, 40)
     }
 
     function resetStyleTracking(): void {
@@ -251,16 +254,19 @@ namespace thermalPrinter {
 
     /**
      * Change how dark and how fast the printer prints.
-     * Higher values print darker but slower, and drain the power supply harder.
+     * The factory setting is 7, 80, 2. Raising the time makes text darker, but
+     * on a picture, which covers much more of the paper in black, too high a
+     * figure overheats the print head and the printer stops part way down the
+     * page. For pictures stay near 120.
      * @param dots max heating dots, 0-7, eg: 7
-     * @param time heating time in units of 10us, 0-255, eg: 255
-     * @param interval heating interval in units of 10us, 0-255, eg: 255
+     * @param time heating time in units of 10us, 0-255, eg: 120
+     * @param interval heating interval in units of 10us, 0-255, eg: 40
      */
     //% blockId=thermalprinter_setheat
     //% block="set printer heat|dots %dots|time %time|interval %interval"
     //% dots.min=0 dots.max=7 dots.defl=7
-    //% time.min=0 time.max=255 time.defl=255
-    //% interval.min=0 interval.max=255 interval.defl=255
+    //% time.min=0 time.max=255 time.defl=120
+    //% interval.min=0 interval.max=255 interval.defl=40
     //% group="Setup" weight=90
     //% advanced=true
     export function setHeat(dots: number, time: number, interval: number): void {
