@@ -124,10 +124,10 @@ namespace thermalPrinter {
         currentLine = []
         currentStyle = []
         resetStyleTracking()
-        // Gentler than the connect block, which inherits the original
-        // program's settings for text. Pictures cover far more of the paper
-        // in black, and at that heat the head cuts out part way down the page.
-        setHeat(7, 120, 40)
+        // Deliberately sends nothing. A program that hands over the port is
+        // often still starting up, and a write to a printer that is off or
+        // miswired would hang the whole program before it can report anything.
+        // Set the heat yourself once you are ready - 7, 120, 40 suits pictures.
     }
 
     function resetStyleTracking(): void {
